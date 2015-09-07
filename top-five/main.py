@@ -20,6 +20,13 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.write('Hello world!')
 
+class ListHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write('What\'s gucci')
+
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/list/123', ListHandler)
 ], debug=True)
+
+
