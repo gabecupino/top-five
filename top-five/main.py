@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 import webapp2
+import json
+
+place = ['name', 'Kyo-Chon', 'bgImage',
+         'kyochonlogo.jpg', 'iconImage', 'chicken.png']
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -22,7 +26,9 @@ class MainHandler(webapp2.RequestHandler):
 
 class ListHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('What\'s gucci')
+        self.response.write(json.dumps([{place[0]:place[1]},{place[2]:place[3]},{place[4]:place[5]}]))
+
+
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
