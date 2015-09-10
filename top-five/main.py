@@ -16,9 +16,25 @@
 #
 import webapp2
 import json
+from google.appengine.ext import ndb
 
-place = ['name', 'Kyo-Chon', 'bgImage',
+temp_place = ['name', 'Kyo-Chon', 'bgImage',
          'kyochonlogo.jpg', 'iconImage', 'chicken.png']
+
+
+DEFAULT_LIST_NAME = 'cool_list'
+
+
+def list_key(list_name=DEFAULT_LIST_NAME):
+    ''' Constructs a Datastore key for a list entity. '''
+    return ndb.Key('List', list_name)
+
+class Place(ndb.Model):
+    ''' Main model representing a place '''
+    name = ndb.StringProperty('Name')
+    bgImage = ndb.StringProperty('Background Image')
+    icon = ndb.StringProperty('Icon')
+
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -26,13 +42,34 @@ class MainHandler(webapp2.RequestHandler):
 
 class ListHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write(json.dumps([{place[0]:place[1]},{place[2]:place[3]},{place[4]:place[5]}]))
+        places_query = Place.query().order()
+        places = places_query.fetch(5)
+
+        self.response.write(json.dumps([place.to_dict() for place in places]))
+
+class PutHandler(webapp2.RequestHandler):
+    def get(self):
+        list_name=DEFAULT_LIST_NAME
+        
+        place = Place(parent=list_key(list_name))
+        place.name = 'Halal Guys'
+        place.bgImage = 'halalguyslogo.png'
+        place.icon = 'chickenrice.jpg'
+
+        place.put()
+
+
+    
 
 
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/list/123', ListHandler)
+    ('/list/123', ListHandler),
+    ('/put', PutHandler)
 ], debug=True)
+
+
+
 
 
